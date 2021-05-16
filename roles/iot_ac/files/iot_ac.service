@@ -1,0 +1,18 @@
+[Unit]
+Description=IoT Service for HASS connection reporting temperature and controlling AC
+
+After=network-online.target
+Wants=network-online.target
+Requires=lircd.service
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/local/lib/iot_ac_service/iot_ac.py
+Environment=PYTHONUNBUFFERED=1
+Type=notify
+User=pi
+
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

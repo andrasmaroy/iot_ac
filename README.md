@@ -44,6 +44,10 @@ When Ansible and SSH are both ready software can be installed by running the pla
 pipenv run ansible-playbook -i hosts -l iot_ac site.yml
 ```
 
+### Home Assistant
+
+The way the code communicates with Home Assistant assumes that [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/) is enabled and presents as two [sensors](https://www.home-assistant.io/integrations/sensor.mqtt/) and a [climate](https://www.home-assistant.io/integrations/climate/) unit.
+
 ## Decoding the remote
 
 Details about decoding from [Gabriel Oliveira](https://github.com/gabaloliveira/lirc-conf-midea-rg70a-bgef.1-2)

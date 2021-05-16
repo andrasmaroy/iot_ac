@@ -4,3 +4,4 @@
 - import_tasks: log2ram.yml
 - import_tasks: lirc.yml
 - import_tasks: htu21d.yml
+- import_tasks: iot.yml
