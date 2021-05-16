@@ -12,3 +12,12 @@ Control Midea split AC unit through Home Assistant with a Raspberry Pi.
 * MQTT broker of choice
 
 To get started install the pHAT along with the sensor to the Pi. The IR leds should have line of sight of the split unit, but the signals can bounce off walls pretty good.
+
+## Installation
+
+### Preparing the SD card
+
+Insert the SD card and find its ID with `diskutil list` then run [prepare-sdcard.sh](prepare-sdcard.sh) to install Raspbian on it:
+```sh
+./prepare-sdcard.sh /dev/disk3
+```
