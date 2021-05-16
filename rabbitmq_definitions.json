@@ -1,0 +1,131 @@
+
+{
+    "rabbit_version": "3.8.0",
+    "parameters": [
+        {
+            "value": {
+                "ack-mode": "on-confirm",
+                "dest-add-forward-headers": false,
+                "dest-exchange": "amq.topic",
+                "dest-exchange-key": "homeassistant.climate.iot_ac.livingroom.available",
+                "dest-protocol": "amqp091",
+                "dest-uri": "amqp://",
+                "src-delete-after": "never",
+                "src-protocol": "amqp091",
+                "src-queue": "homeassistant.iot_ac.fanout.A",
+                "src-uri": "amqp://"
+            },
+            "vhost": "/",
+            "component": "shovel",
+            "name": "iot_ac-availableA"
+        },
+        {
+            "value": {
+                "ack-mode": "on-confirm",
+                "dest-add-forward-headers": false,
+                "dest-exchange": "amq.topic",
+                "dest-exchange-key": "homeassistant.sensor.iot_ac.livingroomH.available",
+                "dest-protocol": "amqp091",
+                "dest-uri": "amqp://",
+                "src-delete-after": "never",
+                "src-protocol": "amqp091",
+                "src-queue": "homeassistant.iot_ac.fanout.H",
+                "src-uri": "amqp://"
+            },
+            "vhost": "/",
+            "component": "shovel",
+            "name": "iot_ac-availableH"
+        },
+        {
+            "value": {
+                "ack-mode": "on-confirm",
+                "dest-add-forward-headers": false,
+                "dest-exchange": "amq.topic",
+                "dest-exchange-key": "homeassistant.sensor.iot_ac.livingroomT.available",
+                "dest-protocol": "amqp091",
+                "dest-uri": "amqp://",
+                "src-delete-after": "never",
+                "src-protocol": "amqp091",
+                "src-queue": "homeassistant.iot_ac.fanout.T",
+                "src-uri": "amqp://"
+            },
+            "vhost": "/",
+            "component": "shovel",
+            "name": "iot_ac-availableT"
+        }
+    ],
+    "queues": [
+        {
+            "name": "homeassistant.iot_ac.fanout.A",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        },
+        {
+            "name": "homeassistant.iot_ac.fanout.H",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        },
+        {
+            "name": "homeassistant.iot_ac.fanout.T",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "homeassistant.iot_ac.fanout",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "homeassistant.iot_ac.fanout",
+            "vhost": "/",
+            "destination": "homeassistant.iot_ac.fanout.A",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "homeassistant.iot_ac.fanout",
+            "vhost": "/",
+            "destination": "homeassistant.iot_ac.fanout.H",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "homeassistant.iot_ac.fanout",
+            "vhost": "/",
+            "destination": "homeassistant.iot_ac.fanout.T",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "amq.topic",
+            "vhost": "/",
+            "destination": "homeassistant.iot_ac.fanout",
+            "destination_type": "exchange",
+            "routing_key": "homeassistant.climate.iot_ac.livingroom.availableFanout",
+            "arguments": {}
+        }
+    ]
+}
