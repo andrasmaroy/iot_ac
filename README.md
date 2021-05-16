@@ -21,3 +21,16 @@ Insert the SD card and find its ID with `diskutil list` then run [prepare-sdcard
 ```sh
 ./prepare-sdcard.sh /dev/disk3
 ```
+
+### Install dependencies & prepare the project
+
+There are a few steps to get everything ready, first install dependencies:
+```sh
+pipenv install
+pipenv run ansible-galaxy collection install community.general
+```
+
+Then populate the required secret files in the `secrets` folder:
+* `iot_ac-mqtt-password` - password for the mqtt connection
+* `domain` - domain for your network (e.g. `home.local`), this gets appended to `mqtt_domain` to get FQDN
+* `password` - new password for the `pi` user on the Raspberry
