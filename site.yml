@@ -1,0 +1,6 @@
+---
+
+- hosts: iot_ac
+  remote_user: pi
+  roles:
+    - iot_ac

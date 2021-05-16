@@ -34,3 +34,12 @@ Then populate the required secret files in the `secrets` folder:
 * `iot_ac-mqtt-password` - password for the mqtt connection
 * `domain` - domain for your network (e.g. `home.local`), this gets appended to `mqtt_domain` to get FQDN
 * `password` - new password for the `pi` user on the Raspberry
+
+### Installing on the Pi
+
+Boot up the Raspberry and follow the steps from the end of the script to set up SSH.
+
+When Ansible and SSH are both ready software can be installed by running the playbook:
+```sh
+pipenv run ansible-playbook -i hosts -l iot_ac site.yml
+```
