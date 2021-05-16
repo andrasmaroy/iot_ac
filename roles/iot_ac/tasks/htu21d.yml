@@ -1,0 +1,40 @@
+---
+
+- name: Install required libs
+  apt:
+    update_cache: yes
+    pkg:
+      - i2c-tools
+      - python3-dev
+      - wiringpi
+  become: yes
+  become_method: sudo
+
+- name: Enable i2c kernel module
+  lineinfile:
+    path: /etc/modules
+    line: "i2c-dev"
+  become: yes
+  become_method: sudo
+  register: kernel_module
+
+- name: Reboot the Raspberry for changes to apply
+  reboot:
+  become: yes
+  become_method: sudo
+  when: kernel_module.changed
+
+- name: Install python sensor package
+  pip:
+    name:
+      - sensor
+      - smbus
+      - spidev
+    executable: /usr/local/bin/pip3
+
+- name: Detect the sensor
+  shell:
+    cmd: i2cdetect -y 1
+    creates: /dev/i2c-1
+  become: yes
+  become_method: sudo
