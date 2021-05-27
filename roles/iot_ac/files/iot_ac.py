@@ -52,28 +52,57 @@ def on_connect(client, userdata, flags, rc):
 
 
 def announce_device(client):
+    mac = open('/sys/class/net/wlan0/address').readline()[0:17]
     configuration = {
         "device_class": "temperature",
-        "name": "Temperature",
+        "name": "Living Room Temperature",
         "availability_topic": "homeassistant/sensor/iot_ac/livingroomT/available",
         "state_topic": "homeassistant/sensor/iot_ac/livingroom/state",
         "unit_of_measurement": "°C",
         "value_template": "{{ value_json.temperature}}",
         "unique_id": "livingroomtempsensor1",
         "expire_after": 60,
+        "device": {
+            "name": "Living Room AC",
+            "manufacturer": "Midea",
+            "model": "MS0A-09HRN1",
+            "connections": [
+                [
+                    "mac",
+                    mac
+                ]
+            ],
+            "suggested_area": "Living Room",
+            "sw_version": "20210526",
+            "identifiers": [
+                "C101316172111311120478"
+            ],
+        }
     }
     client.publish(
         "homeassistant/sensor/iot_ac/livingroomT/config", json.dumps(configuration)
     )
     configuration = {
         "device_class": "humidity",
-        "name": "Humidity",
+        "name": "Living Room Humidity",
         "availability_topic": "homeassistant/sensor/iot_ac/livingroomH/available",
         "state_topic": "homeassistant/sensor/iot_ac/livingroom/state",
         "unit_of_measurement": "%",
         "value_template": "{{ value_json.humidity}}",
         "unique_id": "livingroomhumsensor1",
         "expire_after": 60,
+        "device": {
+            "via_device": "C101316172111311120478",
+            "connections": [
+                [
+                    "mac",
+                    mac
+                ]
+            ],
+            "identifiers": [
+                "C101316172111311120478-hum"
+            ]
+        }
     }
     client.publish(
         "homeassistant/sensor/iot_ac/livingroomH/config", json.dumps(configuration)
@@ -82,7 +111,7 @@ def announce_device(client):
     client.publish("homeassistant/sensor/iot_ac/livingroomH/available", "online")
 
     configuration = {
-        "name": "Living Room",
+        "name": "Living Room AC",
         "mode_command_topic": "homeassistant/climate/iot_ac/livingroom/thermostatModeCmd",
         "mode_state_topic": "homeassistant/climate/iot_ac/livingroom/state",
         "mode_state_template": "{{ value_json.mode }}",
@@ -99,10 +128,16 @@ def announce_device(client):
         "max_temp": "30",
         "temp_step": "1.0",
         "device": {
-            "manufacturer": "Midea",
-            "model": "MS0A-09HRN1",
-            "via_device": "iot_ac",
-            "identifiers": "C101316172111311120478"
+            "via_device": "C101316172111311120478",
+            "connections": [
+                [
+                    "mac",
+                    mac
+                ]
+            ],
+            "identifiers": [
+                "C101316172111311120478-ac"
+            ]
         },
         "unique_id": "livingroomac1",
         "retain": "true"
