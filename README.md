@@ -48,49 +48,6 @@ pipenv run ansible-playbook -i hosts -l iot_ac site.yml
 
 The way the code communicates with Home Assistant assumes that [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/) is enabled and presents as two [sensors](https://www.home-assistant.io/integrations/sensor.mqtt/) and a [climate](https://www.home-assistant.io/integrations/climate/) unit.
 
-### MQTT
-
-In the background to get all entities in Home Assistant offline when the device disconnects from the network there is a little trickery with RabbitMQ.
-
-Last will and testament can only be sent to one topic, but the device is responsible for 3 entities in HASS, in order to get those all offline with a single message we can the [shovel](https://www.rabbitmq.com/shovel.html) plugin with a fanout exchange. See the diagram below the setup.
-```
-                     ┌──────┐
-                     │iot_ac│
-                     └───┬──┘
-                         │LWT
- MQTT Topic              │
-┌────────────────────────▼──────────────────────────────┐
-│homeassistant/climate/iot_ac/livingroom/availableFanout│
-└───────────────────┬───────────────────────────────────┘
-                    │
-                    │                  queue
-                    │                 ┌─────────────────────────────┐
-                    │           ┌────►│homeassistant/iot_ac/fanout/A├──┐
-                    │           │     └─────────────────────────────┘  │
- Fanout exchange    │           │      queue                           │
-┌───────────────────▼───────┐   │     ┌─────────────────────────────┐  │shovel
-│homeassistant/iot_ac/fanout├───┼────►│homeassistant/iot_ac/fanout/H├──┼─┐
-└───────────────────────────┘   │     └─────────────────────────────┘  │ │
-                                │      queue                           │ │
-                                │     ┌─────────────────────────────┐  │ │
-                                └────►│homeassistant/iot_ac/fanout/T├──┼─┼─┐
-                                      └─────────────────────────────┘  │ │ │
-                                                                       │ │ │
-                   MQTT Topic                                          │ │ │
-                  ┌─────────────────────────────────────────────────┐  │ │ │
-             ┌────┤homeassistant/climate/iot_ac/livingroom/available│◄─┘ │ │
-             │    └─────────────────────────────────────────────────┘    │ │
-             │     MQTT Topic                                            │ │
- ┌────┐      │    ┌─────────────────────────────────────────────────┐    │ │
- │hass│◄─────┼────┤homeassistant/sensor/iot_ac/livingroomT/available│◄───┘ │
- └────┘      │    └─────────────────────────────────────────────────┘      │
-             │     MQTT Topic                                              │
-             │    ┌─────────────────────────────────────────────────┐      │
-             └────┤homeassistant/sensor/iot_ac/livingroomH/available│◄─────┘
-                  └─────────────────────────────────────────────────┘
-```
-For creating this setup in RabbitMQ see [rabbitmq_definitions.json](rabbitmq_definitions.json).
-
 ## Decoding the remote
 
 Details about decoding from [Gabriel Oliveira](https://github.com/gabaloliveira/lirc-conf-midea-rg70a-bgef.1-2)

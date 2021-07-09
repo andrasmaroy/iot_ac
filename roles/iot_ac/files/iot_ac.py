@@ -56,7 +56,7 @@ def announce_device(client):
     configuration = {
         "device_class": "temperature",
         "name": "Living Room Temperature",
-        "availability_topic": "homeassistant/sensor/iot_ac/livingroomT/available",
+        "availability_topic": "homeassistant/climate/iot_ac/livingroom/available",
         "state_topic": "homeassistant/sensor/iot_ac/livingroom/state",
         "unit_of_measurement": "°C",
         "value_template": "{{ value_json.temperature}}",
@@ -85,7 +85,7 @@ def announce_device(client):
     configuration = {
         "device_class": "humidity",
         "name": "Living Room Humidity",
-        "availability_topic": "homeassistant/sensor/iot_ac/livingroomH/available",
+        "availability_topic": "homeassistant/climate/iot_ac/livingroom/available",
         "state_topic": "homeassistant/sensor/iot_ac/livingroom/state",
         "unit_of_measurement": "%",
         "value_template": "{{ value_json.humidity}}",
@@ -107,8 +107,6 @@ def announce_device(client):
     client.publish(
         "homeassistant/sensor/iot_ac/livingroomH/config", json.dumps(configuration)
     )
-    client.publish("homeassistant/sensor/iot_ac/livingroomT/available", "online")
-    client.publish("homeassistant/sensor/iot_ac/livingroomH/available", "online")
 
     configuration = {
         "name": "Living Room AC",
@@ -205,8 +203,6 @@ def publish_loop():
     global should_run
     while True:
         if should_run:
-            client.publish("homeassistant/sensor/iot_ac/livingroomT/available", "online")
-            client.publish("homeassistant/sensor/iot_ac/livingroomH/available", "online")
             client.publish("homeassistant/climate/iot_ac/livingroom/available", "online")
 
             h, t = htu.all()
@@ -225,8 +221,6 @@ def signal_handler(signum, frame):
     global should_run
     should_run = False
     print("Shutting down")
-    client.publish("homeassistant/sensor/iot_ac/livingroomT/available", "offline").wait_for_publish()
-    client.publish("homeassistant/sensor/iot_ac/livingroomH/available", "offline").wait_for_publish()
     client.publish("homeassistant/climate/iot_ac/livingroom/available", "offline").wait_for_publish()
     client.loop_stop()
     client.disconnect()
@@ -245,7 +239,7 @@ client.on_message = on_message
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
 client.tls_set(tls_version=ssl.PROTOCOL_TLSv1_2)
-client.will_set("homeassistant/climate/iot_ac/livingroom/availableFanout", "offline")
+client.will_set("homeassistant/climate/iot_ac/livingroom/available", "offline")
 
 client.username_pw_set(config["user"], config["password"])
 client.connect(config["host"], config["port"], 60)
