@@ -80,7 +80,7 @@ def announce_device(client):
         }
     }
     client.publish(
-        "homeassistant/sensor/iot_ac/livingroomT/config", json.dumps(configuration)
+        "homeassistant/sensor/iot_ac/livingroomT/config", json.dumps(configuration), qos=2, retain=True
     )
     configuration = {
         "device_class": "humidity",
@@ -105,7 +105,7 @@ def announce_device(client):
         }
     }
     client.publish(
-        "homeassistant/sensor/iot_ac/livingroomH/config", json.dumps(configuration)
+        "homeassistant/sensor/iot_ac/livingroomH/config", json.dumps(configuration), qos=2, retain=True
     )
 
     configuration = {
@@ -141,7 +141,7 @@ def announce_device(client):
         "retain": "true"
     }
     client.publish(
-        "homeassistant/climate/iot_ac/livingroom/config", json.dumps(configuration)
+        "homeassistant/climate/iot_ac/livingroom/config", json.dumps(configuration), qos=2, retain=True
     )
     client.publish("homeassistant/climate/iot_ac/livingroom/available", "online")
 
