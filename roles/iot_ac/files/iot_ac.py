@@ -228,19 +228,19 @@ def signal_handler(signum, frame):
     sys.exit(0)
 
 
-signal.signal(signal.SIGTERM, signal_handler)
-publish_thread = threading.Thread(target=publish_loop, daemon=True)
-htu = HTU21D(1, 0x40)
-should_run = False
+if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, signal_handler)
+    publish_thread = threading.Thread(target=publish_loop, daemon=True)
+    htu = HTU21D(1, 0x40)
+    should_run = False
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.on_publish = on_publish
-client.on_disconnect = on_disconnect
-client.tls_set(tls_version=ssl.PROTOCOL_TLSv1_2)
-client.will_set("homeassistant/climate/iot_ac/livingroom/available", "offline")
-
-client.username_pw_set(config["user"], config["password"])
-client.connect(config["host"], config["port"], 60)
-client.loop_forever()
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.on_publish = on_publish
+    client.on_disconnect = on_disconnect
+    client.tls_set(tls_version=ssl.PROTOCOL_TLSv1_2)
+    client.will_set("homeassistant/climate/iot_ac/livingroom/available", "offline")
+    client.username_pw_set(config["user"], config["password"])
+    client.connect(config["host"], config["port"], 60)
+    client.loop_forever()
