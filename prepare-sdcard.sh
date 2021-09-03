@@ -41,6 +41,7 @@ country=HU
 
 network={
         ssid="${WIFI_SSID}"
+        scan_ssid=1
         psk="${WIFI_PASSWORD}"
 }
 EOF
