@@ -22,27 +22,36 @@ Insert the SD card and find its ID with `diskutil list` then run [prepare-sdcard
 ./prepare-sdcard.sh /dev/disk3
 ```
 
-### Install dependencies & prepare the project
-
-There are a few steps to get everything ready, first install dependencies:
-```sh
-pipenv install
-pipenv run ansible-galaxy collection install community.general
-```
-
-Then populate the required secret files in the `secrets` folder:
-* `iot_ac-mqtt-password` - password for the mqtt connection
-* `domain` - domain for your network (e.g. `home.local`), this gets appended to `mqtt_domain` to get FQDN
-* `password` - new password for the `pi` user on the Raspberry
-
 ### Installing on the Pi
 
-Boot up the Raspberry and follow the steps from the end of the script to set up SSH.
-
-When Ansible and SSH are both ready software can be installed by running the playbook:
-```sh
-pipenv run ansible-playbook -i hosts -l iot_ac site.yml
+Designed to be used as an Ansible role included in a playbook. To install include in the `requirements.yml` like so:
+```yml
+collections:
+  - name: git@github.com:andrasmaroy/iot_ac.git#/ansible
+    type: git
 ```
+And in the playbook file for the appropriate hosts:
+```yml
+- hosts: iot_ac
+  collections:
+    - andrasmaroy.iot_ac
+  tasks:
+    - import_role:
+        name: iot_ac
+```
+Presented as a collection so that it can be installed directly from the [ansible](ansible) subfolder of this repo.
+
+#### Configuration
+
+The following Ansible vars are available for configuration:
+
+`mqtt_host` (**required**): Hostname of the MQTT host to connect to
+
+`mqtt_port` (default: 1883): Port to use for MQTT connection
+
+`mqtt_user` (default: iot_ac): MQTT username
+
+`mqtt_password` (**required**): MQTT password
 
 ### Home Assistant
 
