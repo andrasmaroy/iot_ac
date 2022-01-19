@@ -1,0 +1,8 @@
+mqtt_port: 1883
+mqtt_user: iot_ac
+
+config:
+  host: "{{ mqtt_host }}"
+  port: "{{ mqtt_port }}"
+  user: "{{ mqtt_user }}"
+  password: "{{ mqtt_password }}"

@@ -53,7 +53,7 @@
 
 - name: Create config
   copy:
-    content: "{\"host\": \"{{ mqtt_domain }}.{{ lookup('file', 'secrets/domain') }}\", \"port\": 1883, \"user\": \"{{ mqtt_user }}\", \"password\": \"{{ lookup('file', 'secrets/iot_ac-mqtt-password') }}\"}"
+    content: "{{ config | to_json }}"
     dest: /etc/iot_ac/config.json
     owner: pi
     group: pi
