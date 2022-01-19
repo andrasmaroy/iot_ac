@@ -1,0 +1,9 @@
+namespace: andrasmaroy
+name: iot_ac
+version: 1.0.0
+readme: ../README.md
+authors:
+- András Maróy <andras@maroy.hu>
+license_file: ../LICENSE
+repository: https://github.com/andrasmaroy/iot_ac
+issues: https://github.com/andrasmaroy/iot_ac/issues

@@ -2,17 +2,19 @@
 
 - name: Install dependencies
   apt:
-    update_cache: yes
     pkg:
       - python3-systemd
   become: yes
   become_method: sudo
 
+- name: Copy requirements file
+  copy:
+    dest: /home/pi/
+    src: iot_ac/requirements.txt
+
 - name: Install python dependencies
   pip:
-    name:
-      - paho-mqtt
-      - pconf
+    requirements: /home/pi/requirements.txt
     executable: /usr/local/bin/pip3
 
 - name: Create service folders
@@ -28,7 +30,7 @@
 
 - name: Copy systemd service file
   copy:
-    src: roles/iot_ac/files/iot_ac.service
+    src: iot_ac/iot_ac.service
     dest: /etc/systemd/system/iot_ac.service
     owner: root
     group: root
@@ -39,7 +41,7 @@
 
 - name: Copy source
   copy:
-    src: roles/iot_ac/files/iot_ac.py
+    src: iot_ac/iot_ac.py
     dest: /usr/local/lib/iot_ac_service/iot_ac.py
     owner: root
     group: root
@@ -50,7 +52,7 @@
 
 - name: Create config
   copy:
-    content: "{\"host\": \"{{ mqtt_domain }}.{{ lookup('file', 'secrets/domain') }}\", \"port\": 1883, \"user\": \"{{ mqtt_user }}\", \"password\": \"{{ lookup('file', 'secrets/iot_ac-mqtt-password') }}\"}"
+    content: "{{ config | to_json }}"
     dest: /etc/iot_ac/config.json
     owner: pi
     group: pi
