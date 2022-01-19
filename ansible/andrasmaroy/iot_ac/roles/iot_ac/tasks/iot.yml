@@ -28,7 +28,7 @@
 
 - name: Copy systemd service file
   copy:
-    src: roles/iot_ac/files/iot_ac.service
+    src: roles/iot_ac/files/iot_ac/iot_ac.service
     dest: /etc/systemd/system/iot_ac.service
     owner: root
     group: root
@@ -39,7 +39,7 @@
 
 - name: Copy source
   copy:
-    src: roles/iot_ac/files/iot_ac.py
+    src: roles/iot_ac/files/iot_ac/iot_ac.py
     dest: /usr/local/lib/iot_ac_service/iot_ac.py
     owner: root
     group: root
