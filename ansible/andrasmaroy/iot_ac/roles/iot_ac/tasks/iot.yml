@@ -11,7 +11,7 @@
 - name: Copy requirements file
   copy:
     dest: /home/pi/
-    src: roles/iot_ac/files/iot_ac/requirements.txt
+    src: iot_ac/requirements.txt
 
 - name: Install python dependencies
   pip:
@@ -31,7 +31,7 @@
 
 - name: Copy systemd service file
   copy:
-    src: roles/iot_ac/files/iot_ac/iot_ac.service
+    src: iot_ac/iot_ac.service
     dest: /etc/systemd/system/iot_ac.service
     owner: root
     group: root
@@ -42,7 +42,7 @@
 
 - name: Copy source
   copy:
-    src: roles/iot_ac/files/iot_ac/iot_ac.py
+    src: iot_ac/iot_ac.py
     dest: /usr/local/lib/iot_ac_service/iot_ac.py
     owner: root
     group: root
