@@ -3,7 +3,7 @@
 - name: Copy patched and compiled lirc deb files
   copy:
     dest: /home/pi/
-    src: "roles/iot_ac/files/{{ item }}"
+    src: "roles/iot_ac/files/lirc/{{ item }}"
   with_items:
     - liblirc0_0.10.1-5.2_armhf.deb
     - liblircclient0_0.10.1-5.2_armhf.deb
@@ -14,7 +14,7 @@
     dest: /etc/lirc/
     owner: root
     group: root
-    src: "roles/iot_ac/files/{{ item }}"
+    src: "roles/iot_ac/files/lirc/{{ item }}"
   with_items:
     - lirc_options.conf
     - lircd.conf
