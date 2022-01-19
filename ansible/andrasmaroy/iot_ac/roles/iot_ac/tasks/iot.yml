@@ -8,11 +8,14 @@
   become: yes
   become_method: sudo
 
+- name: Copy requirements file
+  copy:
+    dest: /home/pi/
+    src: roles/iot_ac/files/iot_ac/requirements.txt
+
 - name: Install python dependencies
   pip:
-    name:
-      - paho-mqtt
-      - pconf
+    requirements: /home/pi/requirements.txt
     executable: /usr/local/bin/pip3
 
 - name: Create service folders
