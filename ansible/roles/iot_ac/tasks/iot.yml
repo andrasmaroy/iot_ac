@@ -4,8 +4,6 @@
   apt:
     pkg:
       - python3-systemd
-  become: yes
-  become_method: sudo
 
 - name: Copy requirements file
   copy:
@@ -25,8 +23,6 @@
     - /etc/iot_ac
     - /etc/systemd/system
     - /usr/local/lib/iot_ac_service
-  become: yes
-  become_method: sudo
 
 - name: Copy systemd service file
   copy:
@@ -35,8 +31,6 @@
     owner: root
     group: root
     mode: "0644"
-  become: yes
-  become_method: sudo
   register: service_file
 
 - name: Copy source
@@ -46,8 +40,6 @@
     owner: root
     group: root
     mode: "0644"
-  become: yes
-  become_method: sudo
   register: service_src
 
 - name: Create config
@@ -58,8 +50,6 @@
     group: pi
     mode: '0400'
   no_log: true
-  become: yes
-  become_method: sudo
   register: service_conf
 
 - name: Restart service if needed
@@ -68,8 +58,6 @@
     daemon_reload: yes
     enabled: yes
     state: restarted
-  become: yes
-  become_method: sudo
   when: service_file.changed or service_src.changed or service_conf.changed
 
 - name: Ensure service is running
@@ -78,5 +66,3 @@
     daemon_reload: yes
     enabled: yes
     state: started
-  become: yes
-  become_method: sudo
