@@ -9,6 +9,19 @@
   become: yes
   become_method: sudo
 
+- name: Set raspi-config value
+  lineinfile:
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    path: /boot/config.txt
+  with_items:
+    - { regexp: '^.*dtparam=i2c_arm.*$', line: 'dtparam=i2c_arm=on' }
+    - { regexp: '^.*dtoverlay=gpio-ir,gpio_pin.*$', line: 'dtoverlay=gpio-ir,gpio_pin=18' }
+    - { regexp: '^.*dtoverlay=gpio-ir-tx,gpio_pin.*$', line: 'dtoverlay=gpio-ir-tx,gpio_pin=17' }
+    - { regexp: '^.*dtparam=pwr_led_trigger.*$', line: 'dtparam=pwr_led_trigger=none' }
+    - { regexp: '^.*dtparam=pwr_led_activelow.*$', line: 'dtparam=pwr_led_activelow=off' }
+  register: config_txt
+
 - name: Enable i2c kernel module
   lineinfile:
     path: /etc/modules
@@ -21,7 +34,7 @@
   reboot:
   become: yes
   become_method: sudo
-  when: kernel_module.changed
+  when: config_txt.changed or kernel_module.changed
 
 - name: Install python sensor package
   pip:
