@@ -9,11 +9,13 @@
   copy:
     dest: /home/pi/
     src: iot_ac/requirements.txt
+  register: requirements_file
 
 - name: Install python dependencies
   pip:
     requirements: /home/pi/requirements.txt
     executable: /usr/local/bin/pip3
+  when: requirements_file.changed
 
 - name: Create service folders
   file:
