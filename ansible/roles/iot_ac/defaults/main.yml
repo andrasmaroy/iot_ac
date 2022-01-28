@@ -1,5 +1,7 @@
 mqtt_port: 1883
 mqtt_user: iot_ac
+iot_ac_user: iot_ac
+iot_ac_user_groups: i2c
 
 config:
   host: "{{ mqtt_host }}"

@@ -9,7 +9,7 @@ Requires=lircd.service
 ExecStart=/usr/bin/python3 /usr/local/lib/iot_ac_service/iot_ac.py
 Environment=PYTHONUNBUFFERED=1
 Type=notify
-User=pi
+User={{ iot_ac_user }}
 
 Restart=on-failure
 RestartSec=30

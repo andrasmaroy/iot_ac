@@ -1,22 +1,17 @@
 ---
 
+- name: Create iot_ac user.
+  user:
+    name: "{{ iot_ac_user }}"
+    groups: "{{ iot_ac_user_groups }}"
+    system: yes
+    create_home: no
+    shell: /usr/sbin/nologin
+
 - name: Install dependencies
   apt:
     pkg:
       - python3-systemd
-
-- name: Copy requirements file
-  copy:
-    dest: /home/pi/
-    src: iot_ac/requirements.txt
-  register: requirements_file
-
-- name: Install python dependencies
-  pip:
-    requirements: /home/pi/requirements.txt
-    executable: /usr/local/bin/pip3
-  when: requirements_file.changed
-  notify: Restart iot_ac
 
 - name: Create service folders
   file:
@@ -28,13 +23,25 @@
     - /usr/local/lib/iot_ac_service
 
 - name: Copy systemd service file
-  copy:
-    src: iot_ac/iot_ac.service
+  template:
+    src: iot_ac.service.j2
     dest: /etc/systemd/system/iot_ac.service
     owner: root
     group: root
     mode: "0644"
   notify: Restart iot_ac
+
+- name: Copy requirements file
+  copy:
+    dest: /usr/local/lib/iot_ac_service/requirements.txt
+    src: iot_ac/requirements.txt
+  register: requirements_file
+
+- name: Install python dependencies
+  pip:
+    requirements: /usr/local/lib/iot_ac_service/requirements.txt
+    executable: /usr/local/bin/pip3
+  when: requirements_file.changed
 
 - name: Copy source
   copy:
@@ -49,8 +56,8 @@
   copy:
     content: "{{ config | to_json }}"
     dest: /etc/iot_ac/config.json
-    owner: pi
-    group: pi
+    owner: "{{ iot_ac_user }}"
+    group: "{{ iot_ac_user }}"
     mode: '0400'
   no_log: true
   notify: Restart iot_ac
