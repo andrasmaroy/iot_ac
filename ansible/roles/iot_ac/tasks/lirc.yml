@@ -1,5 +1,13 @@
 ---
 
+- name: Create lirc user
+  user:
+    name: lirc
+    groups: video
+    system: yes
+    create_home: no
+    shell: /usr/sbin/nologin
+
 - name: Copy patched and compiled lirc deb files
   copy:
     dest: /opt/
@@ -27,8 +35,27 @@
     - liblircclient0_0.10.1-5.2_armhf.deb
     - lirc_0.10.1-5.2_armhf.deb
 
+- name: Set permissions for run directory
+  file:
+    path: /var/run/lirc
+    recurse: yes
+    state: directory
+    owner: lirc
+    group: lirc
+
+- name: Patch systemd service for unprivileged user
+  ini_file:
+    path: /lib/systemd/system/lircd.service
+    section: Service
+    option: "{{ item }}"
+    value: lirc
+  with_items:
+    - User
+    - Group
+
 - name: Ensure Lircd is running
   service:
     name: lircd
     enabled: yes
+    daemon_reload: yes
     state: started
