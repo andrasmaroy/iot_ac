@@ -54,7 +54,7 @@
 
 - name: Create config
   copy:
-    content: "{{ config | to_json }}"
+    content: "{{ iot_ac_config | to_json }}"
     dest: /etc/iot_ac/config.json
     owner: "{{ iot_ac_user }}"
     group: "{{ iot_ac_user }}"

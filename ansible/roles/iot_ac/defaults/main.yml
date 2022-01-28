@@ -1,10 +1,10 @@
-mqtt_port: 1883
-mqtt_user: iot_ac
+iot_ac_mqtt_port: 1883
+iot_ac_mqtt_user: iot_ac
 iot_ac_user: iot_ac
 iot_ac_user_groups: i2c
 
-config:
-  host: "{{ mqtt_host }}"
-  port: "{{ mqtt_port }}"
-  user: "{{ mqtt_user }}"
-  password: "{{ mqtt_password }}"
+iot_ac_config:
+  host: "{{ iot_ac_mqtt_host }}"
+  port: "{{ iot_ac_mqtt_port }}"
+  user: "{{ iot_ac_mqtt_user }}"
+  password: "{{ iot_ac_mqtt_password }}"
