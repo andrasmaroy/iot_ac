@@ -16,6 +16,7 @@
     requirements: /home/pi/requirements.txt
     executable: /usr/local/bin/pip3
   when: requirements_file.changed
+  notify: Restart iot_ac
 
 - name: Create service folders
   file:
@@ -33,7 +34,7 @@
     owner: root
     group: root
     mode: "0644"
-  register: service_file
+  notify: Restart iot_ac
 
 - name: Copy source
   copy:
@@ -42,7 +43,7 @@
     owner: root
     group: root
     mode: "0644"
-  register: service_src
+  notify: Restart iot_ac
 
 - name: Create config
   copy:
@@ -52,15 +53,7 @@
     group: pi
     mode: '0400'
   no_log: true
-  register: service_conf
-
-- name: Restart service if needed
-  systemd:
-    name: iot_ac
-    daemon_reload: yes
-    enabled: yes
-    state: restarted
-  when: service_file.changed or service_src.changed or service_conf.changed
+  notify: Restart iot_ac
 
 - name: Ensure service is running
   systemd:

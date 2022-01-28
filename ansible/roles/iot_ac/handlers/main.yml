@@ -1,0 +1,6 @@
+---
+
+- name: Restart iot_ac
+  systemd:
+    name: iot_ac
+    state: restarted
