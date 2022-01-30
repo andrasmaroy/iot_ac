@@ -42,6 +42,11 @@
     owner: root
     group: root
     mode: "0755"
+  register: init_script
+
+- name: Update rc.d with updated init script
+  command: update-rc.d lircd defaults
+  when: init_script.changed
 
 - name: Patch systemd service for unprivileged user
   ini_file:
