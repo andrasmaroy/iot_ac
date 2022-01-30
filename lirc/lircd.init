@@ -26,9 +26,8 @@ fi
 
 # Check if /var/run/lirc exists and has the correct perms
 check_var_directory() {
-  [ ! -d ${pid_dir} ] && mkdir -p ${pid_dir} \
-    && chown root:lirc ${pid_dir} \
-    && chmod 770 ${pid_dir}
+  [ ! -d ${pid_dir} ] && mkdir -p ${pid_dir}
+	chown -R root:lirc ${pid_dir} && chmod 770 ${pid_dir}
 }
 
 case "$1" in
