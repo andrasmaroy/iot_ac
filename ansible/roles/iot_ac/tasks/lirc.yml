@@ -35,18 +35,12 @@
     - liblircclient0_0.10.1-5.2_armhf.deb
     - lirc_0.10.1-5.2_armhf.deb
 
-- name: Copy modified init script
+- name: Modify tmpfiles conf for unprivileged user
   copy:
-    dest: /etc/init.d/lircd
-    src: lirc/lircd.init
+    dest: /usr/lib/tmpfiles.d/lirc.conf
+    content: "d /run/lirc  0775  root  lirc  10d"
     owner: root
     group: root
-    mode: "0755"
-  register: init_script
-
-- name: Update rc.d with updated init script
-  command: update-rc.d lircd defaults
-  when: init_script.changed
 
 - name: Patch systemd service for unprivileged user
   ini_file:
