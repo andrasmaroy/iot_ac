@@ -35,13 +35,13 @@
     - liblircclient0_0.10.1-5.2_armhf.deb
     - lirc_0.10.1-5.2_armhf.deb
 
-- name: Set permissions for run directory
-  file:
-    path: /var/run/lirc
-    recurse: yes
-    state: directory
-    owner: lirc
-    group: lirc
+- name: Copy modified init script
+  copy:
+    dest: /etc/init.d/lircd
+    src: lirc/lircd.init
+    owner: root
+    group: root
+    mode: "0755"
 
 - name: Patch systemd service for unprivileged user
   ini_file:

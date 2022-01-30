@@ -1,0 +1,72 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          lircd
+# Required-Start:    $local_fs $remote_fs $syslog
+# Required-Stop:     $local_fs $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts the LIRCD daemon.
+# Description:       LIRC is used to control different
+#                    infrared receivers and transceivers.
+### END INIT INFO
+
+pid_dir=/var/run/lirc
+
+# source generic LSB initscript helpers
+. /lib/lsb/init-functions
+
+# check if the lirc package is still installed and this not a stale conffile
+test -x /usr/sbin/lircd  || exit 0
+
+# sanity checks for starting lircd
+if [ ! -f /etc/lirc/lircd.conf ] || \
+   [ "$(grep -v -e ^[\ \t]*\# -e ^$ /etc/lirc/lircd.conf | wc -l)" -eq 0 ]; then
+	exit 0
+fi
+
+# Check if /var/run/lirc exists and has the correct perms
+check_var_directory() {
+  [ ! -d ${pid_dir} ] && mkdir -p ${pid_dir} \
+    && chown root:lirc ${pid_dir} \
+    && chmod 770 ${pid_dir}
+}
+
+case "$1" in
+	start)
+		# start lircd
+		check_var_directory
+
+		log_daemon_msg "Starting remote control daemon" "LIRCD"
+		start-stop-daemon --start --quiet --oknodo \
+			--exec /usr/sbin/lircd -- < /dev/null
+		log_end_msg $?
+
+		# retain compatibility with old clients
+		ln -fs /run/lirc/lircd /dev/lircd
+		;;
+	stop)
+		log_daemon_msg "Stopping remote control daemon" "LIRCD"
+		start-stop-daemon --stop --quiet \
+			--exec /usr/sbin/lircd
+		log_end_msg $?
+		;;
+	reload|force-reload)
+		log_daemon_msg "Reload configuration for remote control daemon" "LIRCD"
+		start-stop-daemon --stop --quiet --signal 1 \
+			--exec /usr/sbin/lircd
+		log_end_msg $?
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	status)
+		status_of_proc /usr/sbin/lircd lircd   || exit $?
+		;;
+	*)
+		echo "Usage: /etc/init.d/lircd {start|stop|reload|restart|force-reload|status}"
+		exit 1
+		;;
+esac
+
+exit 0
