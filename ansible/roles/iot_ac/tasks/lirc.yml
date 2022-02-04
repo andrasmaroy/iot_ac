@@ -4,14 +4,15 @@
   user:
     name: lirc
     groups: video
-    system: yes
-    create_home: no
+    system: true
+    create_home: false
     shell: /usr/sbin/nologin
 
 - name: Copy patched and compiled lirc deb files
   copy:
     dest: /opt/
     src: "lirc/{{ item }}"
+    mode: 0644
   with_items:
     - liblirc0_0.10.1-5.2_armhf.deb
     - liblircclient0_0.10.1-5.2_armhf.deb
@@ -23,6 +24,7 @@
     owner: root
     group: root
     src: "lirc/{{ item }}"
+    mode: 0644
   with_items:
     - lirc_options.conf
     - lircd.conf
@@ -41,6 +43,7 @@
     content: "d /run/lirc  0775  root  lirc  10d"
     owner: root
     group: root
+    mode: 0644
 
 - name: Patch systemd service for unprivileged user
   ini_file:
@@ -48,6 +51,7 @@
     section: Service
     option: "{{ item }}"
     value: lirc
+    mode: 0644
   with_items:
     - User
     - Group
@@ -55,6 +59,6 @@
 - name: Ensure Lircd is running
   service:
     name: lircd
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
     state: started

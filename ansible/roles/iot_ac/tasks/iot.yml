@@ -4,8 +4,8 @@
   user:
     name: "{{ iot_ac_user }}"
     groups: "{{ iot_ac_user_groups }}"
-    system: yes
-    create_home: no
+    system: true
+    create_home: false
     shell: /usr/sbin/nologin
 
 - name: Install dependencies
@@ -17,6 +17,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: 0755
   loop:
     - /etc/iot_ac
     - /etc/systemd/system
@@ -28,20 +29,21 @@
     dest: /etc/systemd/system/iot_ac.service
     owner: root
     group: root
-    mode: "0644"
+    mode: 0644
   notify: Restart iot_ac
 
 - name: Copy requirements file
   copy:
     dest: /usr/local/lib/iot_ac_service/requirements.txt
     src: iot_ac/requirements.txt
+    mode: 0644
   register: requirements_file
 
 - name: Install python dependencies
   pip:
     requirements: /usr/local/lib/iot_ac_service/requirements.txt
     executable: /usr/local/bin/pip3
-  when: requirements_file.changed
+  when: requirements_file.changed   # noqa: no-handler
 
 - name: Copy source
   copy:
@@ -49,7 +51,7 @@
     dest: /usr/local/lib/iot_ac_service/iot_ac.py
     owner: root
     group: root
-    mode: "0644"
+    mode: 0644
   notify: Restart iot_ac
 
 - name: Create config
@@ -58,13 +60,13 @@
     dest: /etc/iot_ac/config.json
     owner: "{{ iot_ac_user }}"
     group: "{{ iot_ac_user }}"
-    mode: '0400'
+    mode: 0400
   no_log: true
   notify: Restart iot_ac
 
 - name: Ensure service is running
   systemd:
     name: iot_ac
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true
     state: started
