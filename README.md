@@ -1,5 +1,9 @@
 # iot_ac
 
+**Archived as of 2023 March 2nd**
+
+Functionality of this project has been replaced with a [Zigbee temperature sensor](https://sonoff.tech/product/gateway-and-sensors/snzb-02/) and a [TuYa IR Remote](https://www.aliexpress.com/item/1005004988071727.html) flashed with ESPHome: [infra/living-room-ac.yaml](https://github.com/andrasmaroy/infra/blob/main/kubernetes/home/apps/home-automation/esphome/devices/living-room-ac.yaml).
+
 Control Midea split AC unit through Home Assistant with a Raspberry Pi.
 
 ## Components
